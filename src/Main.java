@@ -6,6 +6,6 @@ public class Main {
     {
         System.out.println("Hello User!");
         Controller controller = new Controller();
-        controller.startProgramm();
+        controller.startProgram();
     }
 }

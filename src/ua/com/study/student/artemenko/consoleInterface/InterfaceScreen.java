@@ -1,9 +1,6 @@
 package ua.com.study.student.artemenko.consoleInterface;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,9 +11,11 @@ public class InterfaceScreen {
     private String headScreen;
     private Map<Integer, String> mapListScreenView = new HashMap<>();
     private Map<Integer, InterfaceScreen> mapListInterfaceScreen = new HashMap<>();
+    private InputScreen inputScreen;
 
     public InterfaceScreen(String path){
         readFromFileList(path);
+        inputScreen = new InputScreen();
     }
 
     private void readFromFileList(String path) {
@@ -40,6 +39,7 @@ public class InterfaceScreen {
     }
 
     public void showInterfaceScreen(){
+        inputScreen.choiceInputScreen(this.headScreen);
         printLine();
         showString(headScreen);
         printLine();
@@ -92,5 +92,12 @@ public class InterfaceScreen {
 
     public void setMapListScreenView(Map<Integer, String> mapListScreenView) {
         this.mapListScreenView = mapListScreenView;
+    }
+
+    @Override
+    public String toString() {
+        return "InterfaceScreen{" +
+                "headScreen='" + headScreen + '\'' +
+                '}';
     }
 }

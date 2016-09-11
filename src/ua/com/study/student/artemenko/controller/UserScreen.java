@@ -48,10 +48,10 @@ public class UserScreen {
         for (Map.Entry<String, InterfaceScreen> sc : interfaceScreenMap.entrySet()) {
             for (Map.Entry<Integer, String> setMap : sc.getValue().getMapListScreenView().entrySet()) {
                 for (Map.Entry<String, InterfaceScreen> scHelp : interfaceScreenMap.entrySet()) {
-                    if (setMap.getValue().equals(scHelp.getValue().getHeadScreen())) {
+                    if ((setMap.getValue().equals(scHelp.getValue().getHeadScreen()))&&(!setMap.getValue().equals("EXIT"))) {
                         sc.getValue().getMapListInterfaceScreen().put(setMap.getKey(), scHelp.getValue());
-                    } else if (setMap.getValue().equals("EXIT")) {
-                        sc.getValue().getMapListInterfaceScreen().put(setMap.getKey(), null);
+                        scHelp.getValue().getMapListInterfaceScreen().put(scHelp.getValue().getCountItemInList(), sc.getValue());
+
                     }
                 }
             }
@@ -62,7 +62,7 @@ public class UserScreen {
     public void setInterfaceScreen(String nameScreen) {
         activeScreen = interfaceScreenMap.get(nameScreen);
         nameScreenActive = nameScreen;
-        interfaceScreenMap.get(nameScreen).showInterfaceScreen();
+        activeScreen.showInterfaceScreen();
     }
 
     public Map<String, InterfaceScreen> getInterfaceScreenMap() {

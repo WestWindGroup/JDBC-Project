@@ -1,38 +1,42 @@
 package ua.com.study.student.artemenko.controller;
 
+
 import java.util.*;
 
-public class Controller{
+public class Controller {
 
     private static Scanner scanner = new Scanner(System.in);
     private UserScreen user;
+    private String nameBeginScreen = "PROJECT";
 
-    public void startProgramm(){
-        try{
+    public void startProgram() {
+        try {
             user = new UserScreen();
             inputData();
-        }finally {
+        } finally {
             scanner.close();
         }
 
     }
 
-    private void inputData(){
+    private void inputData() {
         int countHelp = 0;
         boolean endWork = false;
 
         while (!endWork) {
             if (countHelp == 0) {
-                user.setInterfaceScreen("PROJECT");
+                user.setInterfaceScreen(nameBeginScreen);
             }
             if (scanner.hasNextInt()) {
                 int inputNumber = scanner.nextInt();
                 if ((inputNumber > 0) && (inputNumber <= user.getActiveScreen().getCountItemInList())) {
-                    user.setInterfaceScreen(user.getActiveScreen().getMapListScreenView().get(inputNumber));
-                    countHelp++;
-                    //endWork = interfaceScreen.isEndWork();
-                } else {
-                    //controller.showString(messageErrorChoice);
+                    if ((user.getActiveScreen().getHeadScreen().equals(nameBeginScreen)) &&
+                            (inputNumber == user.getActiveScreen().getCountItemInList())) {
+                        endWork = true;
+                    } else {
+                        user.setInterfaceScreen(user.getActiveScreen().getMapListInterfaceScreen().get(inputNumber).getHeadScreen());
+                        countHelp++;
+                    }
                 }
             } else {
                 countHelp++;
@@ -46,7 +50,7 @@ public class Controller{
         }
     }
 
-    public Scanner getScanner() {
+    public static Scanner getScanner() {
         return scanner;
     }
 
