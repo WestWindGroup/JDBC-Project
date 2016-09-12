@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS project_teams  (
 
 -- Table for mapping team and developers: team_developers
 CREATE TABLE IF NOT EXISTS team_staff (
-  team_id   BIGINT NOT NULL,
+  team_id   BIGINT ,
   staff_id BIGINT NOT NULL,
   FOREIGN KEY (team_id) REFERENCES teams (id),
   FOREIGN KEY (staff_id) REFERENCES staff (id),

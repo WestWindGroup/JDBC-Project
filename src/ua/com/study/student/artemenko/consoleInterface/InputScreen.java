@@ -1,8 +1,14 @@
 package ua.com.study.student.artemenko.consoleInterface;
 
 import ua.com.study.student.artemenko.controller.Controller;
+import ua.com.study.student.artemenko.controllerJDBC.WorkingWithMySQL;
+import ua.com.study.student.artemenko.project.Staff;
+
+import java.util.ArrayList;
 
 public class InputScreen {
+
+    private static WorkingWithMySQL workingWithMySQL = new WorkingWithMySQL();
 
     public void choiceInputScreen(String nameScreen) {
         switch (nameScreen){
@@ -17,6 +23,7 @@ public class InputScreen {
 
         String nameProject = "";
         String descriptionProject = "";
+        Integer projectManagerId = null;
 
         boolean endWork = false;
         System.out.println("Enter the name of the project");
@@ -37,12 +44,19 @@ public class InputScreen {
         }
 
         endWork = false;
-        System.out.println("Select a project manager");
-
+        System.out.println("Select a project manager.Input id");
+        ArrayList<Staff> projectManagerList = workingWithMySQL.showAllProjectManager();
         while (!endWork) {
-            nameProject = Controller.getScanner().nextLine();
-            if ((nameProject != null)&&(nameProject != "")) {
-                endWork = true;
+            int help = Controller.getScanner().nextInt();
+            for (Staff staf:projectManagerList) {
+                if(staf.getPerson().getId_person()==help){
+                    projectManagerId = help;
+                    break;
+                }
+            }
+            if(projectManagerId == null){
+                System.out.println("All project managers are busy.");
+                return;
             }
         }
     }
