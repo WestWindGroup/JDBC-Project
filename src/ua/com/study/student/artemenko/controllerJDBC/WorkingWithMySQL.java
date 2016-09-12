@@ -15,6 +15,7 @@ public class WorkingWithMySQL {
     private static final String PASSWORD = "1234";
     private Connection connection;
     private Statement statement;
+    private String lineHelp = "------------------------------------------------------------------------------------------";
 
     public WorkingWithMySQL() {
         try {
@@ -27,45 +28,81 @@ public class WorkingWithMySQL {
 
     }
 
-    public ArrayList<Staff> showAllProjectManager() {
+    public ArrayList<Integer> showAllProjectManager() {
 
+        String sql = "SELECT staff.id,first_name,last_name,age,name,salary " +
+                        "FROM staff,specialties,staff_specialties,team_staff " +
+                        "WHERE staff.id=staff_specialties.staff_id AND " +
+                        "specialties.id=specialty_id AND " +
+                        "specialties.name='Project Manager' AND " +
+                        "team_staff.staff_id=staff.id AND " +
+                        "team_staff.team_id IS NULL;";
+        ArrayList<Integer> projectManagerList = helpRequest(sql);
+
+//
+        return projectManagerList;
+    }
+
+
+    public ArrayList<Integer> showAllDevelopers() {
+        String sql = "SELECT staff.id,first_name,last_name,age,name,salary " +
+                        "FROM staff,specialties,staff_specialties,team_staff " +
+                        "WHERE staff.id=staff_specialties.staff_id AND " +
+                        "specialties.id=specialty_id AND " +
+                        "specialties.name<>'Project Manager' AND " +
+                        "specialties.name NOT LIKE 'QA%' AND " +
+                        "team_staff.staff_id=staff.id AND " +
+                        "team_staff.team_id IS NULL;";
+        ArrayList<Integer> projectManagerList = helpRequest(sql);
+
+        return projectManagerList;
+    }
+
+    public ArrayList<Integer> showAllTesters() {
         String sql = "SELECT staff.id,first_name,last_name,age,name,salary " +
                 "FROM staff,specialties,staff_specialties,team_staff " +
                 "WHERE staff.id=staff_specialties.staff_id AND " +
                 "specialties.id=specialty_id AND " +
-                "specialties.name='Project Manager' AND " +
+                "specialties.name<>'Project Manager' AND " +
+                "specialties.name LIKE 'QA%' AND " +
                 "team_staff.staff_id=staff.id AND " +
                 "team_staff.team_id IS NULL;";
-        ArrayList<Staff> projectManagerList = new ArrayList<>();
+        ArrayList<Integer> projectManagerList = helpRequest(sql);
 
-        System.out.println("------------------------------------------------------------------------------------------");
+        return projectManagerList;
+    }
+
+    private ArrayList<Integer> helpRequest(String sql){
+        ArrayList<Integer> helpList = new ArrayList<>();
+
+        System.out.println(lineHelp);
         String strH =
-                String.format("|  %5s  |  %15s  |  %15s  |  %4s  |  %15s |  %6s  |", "id", "first_name", "last_name","age", "specialty", "salary");
+                String.format("|  %5s  |  %15s  |  %15s  |  %4s  |  %15s |  %6s  |",
+                                "id", "first_name", "last_name","age", "specialty", "salary");
         System.out.println(strH);
-        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println(lineHelp);
 
         try (ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 int id = resultSet.getInt("staff.id");
+                helpList.add(id);
                 String first_name = resultSet.getString("first_name");
                 String last_name = resultSet.getString("last_name");
                 int age = resultSet.getInt("age");
-                Person person = new Person(last_name,id,first_name,age);
                 String nameSpecialty = resultSet.getString("name");
                 double salary = resultSet.getInt("salary");
-                Specialty specialty = new Specialty(nameSpecialty,salary);
-                projectManagerList.add(new Staff(person,specialty));
 
                 String str =
-                        String.format("|  %5s  |  %15s  |  %15s  |  %4s  |  %15s |  %6s  |", id, first_name, last_name,age, nameSpecialty, salary);
+                        String.format("|  %5s  |  %15s  |  %15s  |  %4s  |  %15s |  %6s  |",
+                                        id, first_name, last_name,age, nameSpecialty, salary);
 
                 System.out.println(str);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("------------------------------------------------------------------------------------------");
-        return projectManagerList;
+        System.out.println(lineHelp);
+        return helpList;
     }
 
     public void closeResurs() {
@@ -76,6 +113,4 @@ public class WorkingWithMySQL {
             e.printStackTrace();
         }
     }
-
-
 }
