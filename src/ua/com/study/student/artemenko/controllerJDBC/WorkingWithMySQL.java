@@ -213,5 +213,71 @@ public class WorkingWithMySQL {
     }
 
     public void showProject(Integer projectId) {
+        String sql1 = "SELECT projects.id,name,description,last_name AS project_manager " +
+                "FROM projects,staff " +
+                "WHERE projects_manager_id=staff.id AND projects.id=" + projectId + ";";
+        String sql2 = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
+                "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
+                "WHERE projects.id=project_teams.project_id AND " +
+                "      project_teams.teams_id=teams.id AND " +
+                "      teams.id=teams_typeteam.team_id AND " +
+                "      teams_typeteam.typeteam_id=typeteam.id AND " +
+                "      staff.id=team_staff.staff_id AND " +
+                "      team_staff.team_id=teams.id AND " +
+                "      staff_specialties.staff_id=staff.id AND " +
+                "      staff_specialties.specialty_id=specialties.id " +
+                "ORDER BY teams.id;";
+        System.out.println(" =======================================================================");
+        String strH1 =
+                String.format("||  %5s  |  %15s  |  %15s  |  %15s  ||",
+                        "id", "name project", "description","project_manager");
+        System.out.println(strH1);
+        System.out.println(" -----------------------------------------------------------------------");
+
+        try (ResultSet resultSet = statement.executeQuery(sql1)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("projects.id");
+                String name_project = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                String project_manager = resultSet.getString("project_manager");
+
+                String str =
+                        String.format("||  %5s  |  %15s  |  %15s  |  %15s  ||",
+                                id, name_project, description,project_manager);
+
+                System.out.println(str);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+//        System.out.println("-----------------------------------------------------------------------");
+        System.out.println(" -----------------------------------------------------------------------==========================================");
+        String strH2 =
+                String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
+                        "id_project","id_team","name","last_name", "id_staff","specialty","salary");
+        System.out.println(strH2);
+        System.out.println(" -----------------------------------------------------------------------------------------------------------------");
+
+        try (ResultSet resultSet = statement.executeQuery(sql2)) {
+            while (resultSet.next()) {
+                int id_project = resultSet.getInt("projects.id");
+                int teams_id = resultSet.getInt("teams.id");
+                String typeteam_name = resultSet.getString("typeteam.name");
+                String last_name = resultSet.getString("staff.last_name");
+                int id_staff = resultSet.getInt("id_staff");
+                String specialty = resultSet.getString("specialty");
+                double salary = resultSet.getInt("specialties.salary");
+
+                String str =
+                        String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
+                                id_project,teams_id,typeteam_name,last_name, id_staff,specialty,salary);
+
+                System.out.println(str);
+            }
+            System.out.println(" =================================================================================================================");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

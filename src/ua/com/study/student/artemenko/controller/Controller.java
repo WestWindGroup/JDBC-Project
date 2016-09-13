@@ -19,7 +19,6 @@ public class Controller {
             scanner.close();
             InputScreen.getWorkingWithMySQL().closeResources();
         }
-
     }
 
     private void inputData() {
@@ -28,7 +27,7 @@ public class Controller {
 
         while (!endWork) {
             if (countHelp == 0) {
-                user.setInterfaceScreen(nameBeginScreen);
+                UserScreen.setInterfaceScreen(nameBeginScreen);
             }
             if (scanner.hasNextInt()) {
                 int inputNumber = scanner.nextInt();
@@ -37,7 +36,7 @@ public class Controller {
                             (inputNumber == user.getActiveScreen().getCountItemInList())) {
                         endWork = true;
                     } else {
-                        user.setInterfaceScreen(user.getActiveScreen().getMapListInterfaceScreen().get(inputNumber).getHeadScreen());
+                        UserScreen.setInterfaceScreen(user.getActiveScreen().getMapListInterfaceScreen().get(inputNumber).getHeadScreen());
                         countHelp++;
                     }
                 }

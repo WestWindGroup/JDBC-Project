@@ -1,4 +1,4 @@
-SELECT projects.id,name,description,last_name AS project_manager FROM projects,staff WHERE projects_manager_id=staff.id;
+# SELECT projects.id,name,description,last_name AS project_manager FROM projects,staff WHERE projects_manager_id=staff.id;
 -- SELECT staff.id,first_name,last_name,name,salary
 -- FROM staff,specialties,staff_specialties,team_staff
 -- WHERE staff.id=staff_specialties.staff_id AND
@@ -34,3 +34,37 @@ SELECT projects.id,name,description,last_name AS project_manager FROM projects,s
 #   FOREIGN KEY (type) REFERENCES typeteam (id)
 # )
 #   ENGINE = InnoDB;
+SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary
+FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff
+WHERE projects.id=project_teams.project_id AND
+      project_teams.teams_id=teams.id AND
+      teams.id=teams_typeteam.team_id AND
+      teams_typeteam.typeteam_id=typeteam.id AND
+      staff.id=team_staff.staff_id AND
+      team_staff.team_id=teams.id AND
+      staff_specialties.staff_id=staff.id AND
+      staff_specialties.specialty_id=specialties.id
+ORDER BY teams.id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

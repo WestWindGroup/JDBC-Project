@@ -39,10 +39,10 @@ public class InterfaceScreen {
     }
 
     public void showInterfaceScreen(){
-        inputScreen.choiceInputScreen(this.headScreen);
-        printLine();
+        //printLine();
         showString(headScreen);
-        printLine();
+        inputScreen.choiceInputScreen(this.headScreen);
+        //printLine();
         showMapList(mapListScreenView);
         printLine();
     }

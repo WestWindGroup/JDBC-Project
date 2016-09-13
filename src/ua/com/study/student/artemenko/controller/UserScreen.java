@@ -14,6 +14,7 @@ public class UserScreen {
     private String nameScreenEditProject = "EDIT PROJECT";
     private String nameScreenEditTeam = "EDIT TEAM";
     private String nameScreenAddTeam = "ADD TEAM";
+    private String nameScreenSelectProject = "SELECT ANOTHER PROJECT";
 
     private String pathToTheFileWithName_Project = "resources\\Project.txt";
     private String pathToTheFileWithName_Create = "resources\\Create.txt";
@@ -23,9 +24,10 @@ public class UserScreen {
     private String pathToTheFileWithName_EditProject = "resources\\EditProject.txt";
     private String pathToTheFileWithName_EditTeam = "resources\\EditTeam.txt";
     private String pathToTheFileWithName_AddTeam = "resources\\AddTeam.txt";
-    private Map<String, InterfaceScreen> interfaceScreenMap;
-    private InterfaceScreen activeScreen;
-    private String nameScreenActive;
+    private String pathToTheFileWithName_selectProject = "resources\\selectProject.txt";
+    private static Map<String, InterfaceScreen> interfaceScreenMap;
+    private static InterfaceScreen activeScreen;
+    private static String nameScreenActive;
 
 
     public UserScreen() {
@@ -43,13 +45,15 @@ public class UserScreen {
         interfaceScreenMap.put(nameScreenEditProject, new InterfaceScreen(pathToTheFileWithName_EditProject));
         interfaceScreenMap.put(nameScreenEditTeam, new InterfaceScreen(pathToTheFileWithName_EditTeam));
         interfaceScreenMap.put(nameScreenAddTeam, new InterfaceScreen(pathToTheFileWithName_AddTeam));
+        interfaceScreenMap.put(nameScreenSelectProject, new InterfaceScreen(pathToTheFileWithName_selectProject));
     }
 
     private void setRelations() {
+
         for (Map.Entry<String, InterfaceScreen> sc : interfaceScreenMap.entrySet()) {
             for (Map.Entry<Integer, String> setMap : sc.getValue().getMapListScreenView().entrySet()) {
                 for (Map.Entry<String, InterfaceScreen> scHelp : interfaceScreenMap.entrySet()) {
-                    if ((setMap.getValue().equals(scHelp.getValue().getHeadScreen()))&&(!setMap.getValue().equals("EXIT"))) {
+                    if ((setMap.getValue().equals(scHelp.getValue().getHeadScreen())) && (!setMap.getValue().equals("EXIT"))) {
                         sc.getValue().getMapListInterfaceScreen().put(setMap.getKey(), scHelp.getValue());
                         scHelp.getValue().getMapListInterfaceScreen().put(scHelp.getValue().getCountItemInList(), sc.getValue());
 
@@ -57,10 +61,11 @@ public class UserScreen {
                 }
             }
         }
+
     }
 
 
-    public void setInterfaceScreen(String nameScreen) {
+    public static void setInterfaceScreen(String nameScreen) {
         activeScreen = interfaceScreenMap.get(nameScreen);
         nameScreenActive = nameScreen;
         activeScreen.showInterfaceScreen();

@@ -1,6 +1,7 @@
 package ua.com.study.student.artemenko.consoleInterface;
 
 import ua.com.study.student.artemenko.controller.Controller;
+import ua.com.study.student.artemenko.controller.UserScreen;
 import ua.com.study.student.artemenko.controllerJDBC.WorkingWithMySQL;
 
 import java.util.ArrayList;
@@ -19,8 +20,15 @@ public class InputScreen {
             case ("SHOW PROJECTS"):
                 InputScreenShowProject();
                 break;
+            case ("SELECT ANOTHER PROJECT"):
+                InputScreenSelectProject();
+                break;
 
         }
+    }
+
+    private void InputScreenSelectProject() {
+        UserScreen.setInterfaceScreen("SHOW PROJECTS");
     }
 
     private void InputScreenShowProject() {
