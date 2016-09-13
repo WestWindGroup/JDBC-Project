@@ -16,15 +16,26 @@ public class InputScreen {
             case ("CREATE PROJECT"):
                 InputScreenCreateProject();
                 break;
+            case ("SHOW PROJECTS"):
+                InputScreenShowProject();
+                break;
 
         }
+    }
+
+    private void InputScreenShowProject() {
+        ArrayList<Integer> listIdProject = workingWithMySQL.showProjects();
+        Integer projectId = inputInt(listIdProject,"Select a project.Input id");
+
+        workingWithMySQL.showProject(projectId);
     }
 
     private void InputScreenCreateProject() {
 
         String nameProject = inputString("Enter the name of the project");
         String descriptionProject = inputString("Enter the name of the project");
-        Integer projectManagerId = inputInt("Select a project manager.Input id");
+        ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
+        Integer projectManagerId = inputInt(idProjectManagerList,"Select a project manager.Input id");
         countProject++;
 
         workingWithMySQL.writeProject(countProject, nameProject, descriptionProject, projectManagerId);
@@ -72,12 +83,12 @@ public class InputScreen {
         return returnString;
     }
 
-    private Integer inputInt(String messenger) {
+    private Integer inputInt(ArrayList<Integer> idProjectManagerList,String messenger) {
         Integer returnInteger = null;
 
         boolean endWork = false;
         System.out.println(messenger);
-        ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
+
         while (!endWork) {
             int help = Controller.getScanner().nextInt();
             for (Integer id : idProjectManagerList) {
@@ -135,6 +146,10 @@ public class InputScreen {
             }
         }
         return listIdStaffInTeam;
-
     }
+
+    public static WorkingWithMySQL getWorkingWithMySQL() {
+        return workingWithMySQL;
+    }
+
 }

@@ -1,6 +1,8 @@
 package ua.com.study.student.artemenko.controller;
 
 
+import ua.com.study.student.artemenko.consoleInterface.InputScreen;
+
 import java.util.*;
 
 public class Controller {
@@ -15,6 +17,7 @@ public class Controller {
             inputData();
         } finally {
             scanner.close();
+            InputScreen.getWorkingWithMySQL().closeResources();
         }
 
     }

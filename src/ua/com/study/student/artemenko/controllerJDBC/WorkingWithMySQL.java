@@ -154,7 +154,7 @@ public class WorkingWithMySQL {
         return helpList;
     }
 
-    public void closeResurs() {
+    public void closeResources() {
         try {
             statement.close();
             connection.close();
@@ -176,5 +176,42 @@ public class WorkingWithMySQL {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public ArrayList<Integer> showProjects() {
+        ArrayList<Integer> helpList = new ArrayList<>();
+        
+        String sql = "SELECT projects.id,name,description,last_name AS project_manager " +
+                "FROM projects,staff " +
+                "WHERE projects_manager_id=staff.id;";
+        System.out.println("------------------------------------------------------------------------");
+        String strH =
+                String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
+                        "id", "name project", "description","project_manager");
+        System.out.println(strH);
+        System.out.println("------------------------------------------------------------------------");
+
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("projects.id");
+                helpList.add(id);
+                String name_project = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                String project_manager = resultSet.getString("project_manager");
+
+                String str =
+                        String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
+                                id, name_project, description,project_manager);
+
+                System.out.println(str);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("------------------------------------------------------------------------");
+        return helpList;
+    }
+
+    public void showProject(Integer projectId) {
     }
 }

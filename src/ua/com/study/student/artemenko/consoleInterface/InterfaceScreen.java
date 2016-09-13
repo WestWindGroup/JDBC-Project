@@ -59,7 +59,7 @@ public class InterfaceScreen {
     }
 
     private void printLine() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("---------------------------");
     }
 
     public Map<Integer, InterfaceScreen> getMapListInterfaceScreen() {

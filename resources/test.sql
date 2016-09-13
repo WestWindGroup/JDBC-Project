@@ -1,4 +1,4 @@
-
+SELECT projects.id,name,description,last_name AS project_manager FROM projects,staff WHERE projects_manager_id=staff.id;
 -- SELECT staff.id,first_name,last_name,name,salary
 -- FROM staff,specialties,staff_specialties,team_staff
 -- WHERE staff.id=staff_specialties.staff_id AND
@@ -18,7 +18,7 @@
 # )
 #   ENGINE = InnoDB;
 # CREATE DATABASE project;
-DELETE FROM teams WHERE id=1;
+# DELETE FROM teams WHERE id=1;
 # CREATE TABLE IF NOT EXISTS teams_typeteam (
 #   type   BIGINT NOT NULL,
 #   typeteam_id BIGINT NOT NULL,
