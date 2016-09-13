@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class WorkingWithMySQL {
 
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost:3306/projectinfo";
+    private static final String URL = "jdbc:mysql://localhost:3306/testproject";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "1234";
     private Connection connection;
@@ -72,6 +72,55 @@ public class WorkingWithMySQL {
         return projectManagerList;
     }
 
+    public void writeProject(int id, String name,String description,int projects_manager_id) {
+        String sql = "INSERT INTO projects (id,name,description,projects_manager_id) " +
+                "VALUES(" + id + ",'" + name + "','" + description + "'," + projects_manager_id + ");";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeTeamStaff(int team_id,int staff_id) {
+        String sql = "UPDATE team_staff SET team_id="+ team_id +" WHERE staff_id=" + staff_id + ";";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeProjectTeams(int project_id, int teams_id) {
+        String sql = "INSERT INTO project_teams (project_id,teams_id) " +
+                "VALUES(" + project_id + "," + teams_id + ");";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeTeams(int id) {
+        String sql = "INSERT INTO teams (id) " +
+                "VALUES(" + id + ");";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeTeamsTypeteam(int team_id, int typeteam_id) {
+        String sql = "INSERT INTO teams_typeteam (team_id,typeteam_id) " +
+                "VALUES(" + team_id + "," + typeteam_id + ");";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArrayList<Integer> helpRequest(String sql){
         ArrayList<Integer> helpList = new ArrayList<>();
 
@@ -112,5 +161,20 @@ public class WorkingWithMySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int returnTypeTeam(String messenger) {
+        int id = 0;
+        String sql = "SELECT id " +
+                "FROM typeteam " +
+                "WHERE name='" + messenger + "';";
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                id = resultSet.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS projects (
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name        VARCHAR(50)   NOT NULL,
   description VARCHAR(1000) NOT NULL,
+  projects_manager_id BIGINT(20) NOT NULL,
   INDEX (name)
 )
   ENGINE = InnoDB;
@@ -40,25 +41,26 @@ CREATE TABLE IF NOT EXISTS projects (
 -- Table: teams
 CREATE TABLE IF NOT EXISTS teams (
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  type        BIGINT   NOT NULL
+
+  UNIQUE (id)
 )
   ENGINE = InnoDB;
 
 -- Table: typeteam
 CREATE TABLE IF NOT EXISTS typeteam(
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name        VARCHAR(1000)   NOT NULL
-  
+  name        VARCHAR(1000)   NOT NULL,
+  UNIQUE (id, name)
 )
   ENGINE = InnoDB;
-  
+
   CREATE TABLE IF NOT EXISTS teams_typeteam (
-  teams_id   BIGINT NOT NULL,
+  team_id   BIGINT NOT NULL,
   typeteam_id BIGINT NOT NULL,
-  FOREIGN KEY (teams_id) REFERENCES teams (id),
+  FOREIGN KEY (team_id) REFERENCES teams (id),
   FOREIGN KEY (typeteam_id) REFERENCES typeteam (id),
 
-  UNIQUE (typeteam_id, teams_id)
+  UNIQUE (typeteam_id, team_id)
 )
   ENGINE = InnoDB;
 
