@@ -71,9 +71,9 @@ public class WorkingWithMySQL {
         return projectManagerList;
     }
 
-    public void writeProject(int id, String name,String description,int projects_manager_id) {
-        String sql = "INSERT INTO projects (id,name,description,projects_manager_id) " +
-                "VALUES(" + id + ",'" + name + "','" + description + "'," + projects_manager_id + ");";
+    public void writeProject(String name,String description,int projects_manager_id) {
+        String sql = "INSERT INTO projects (name,description,projects_manager_id) " +
+                "VALUES('" + name + "','" + description + "'," + projects_manager_id + ");";
         try {
             statement.execute(sql);
         } catch (SQLException e) {
@@ -100,9 +100,9 @@ public class WorkingWithMySQL {
         }
     }
 
-    public void writeTeams(int id) {
-        String sql = "INSERT INTO teams (id) " +
-                "VALUES(" + id + ");";
+    public void writeTeams(int numberTeam) {
+        String sql = "INSERT INTO teams " +
+                "VALUES(" + numberTeam + ");";
         try {
             statement.execute(sql);
         } catch (SQLException e) {
@@ -317,11 +317,13 @@ public class WorkingWithMySQL {
         return idTeamList;
     }
 
-    public void changeDeleteTeam(int changeNumberProject, int deleteTeamId) {
-        String sql1 = "DELETE id FROM teams WHERE id="+ deleteTeamId + ";";
-        String sql2 = "DELETE team_id FROM teams_typeteam WHERE team_id="+ deleteTeamId + ";";
-        String sql3 = "DELETE teams_id FROM project_teams WHERE teams_id="+ deleteTeamId + ";";
-        String sql4 = "UPDATE team_staff SET team_id=NULL WHERE team_id=" + deleteTeamId + ";";
+    public void changeDeleteTeam(int deleteTeamId) {
+
+        String sql1 = "DELETE FROM teams_typeteam WHERE team_id="+ deleteTeamId + ";";
+        String sql2 = "DELETE FROM project_teams WHERE teams_id="+ deleteTeamId + ";";
+        String sql3 = "UPDATE team_staff SET team_id=NULL WHERE team_id=" + deleteTeamId + ";";
+        String sql4 = "DELETE FROM teams WHERE id="+ deleteTeamId + ";";
+
         try {
             statement.execute(sql1);
             statement.execute(sql2);

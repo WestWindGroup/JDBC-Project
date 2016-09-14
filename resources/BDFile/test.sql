@@ -6,8 +6,12 @@
 -- specialties.name='Project Manager' AND
 -- team_staff.staff_id=staff.id AND
 -- team_staff.team_id IS NULL;
-# ALTER TABLE testproject.projects
-#   ADD projects_manager_id BIGINT(20) NOT NULL AFTER description;
+# ALTER TABLE teams
+# ADD team_number BIGINT(20) NOT NULL ;
+# UPDATE teams SET team_number=3 WHERE id=3;
+DELETE FROM projects WHERE id=2;
+# INSERT INTO project_teams VALUE (1,2);
+# INSERT INTO teams_typeteam VALUE (2,1);
 # CREATE TABLE IF NOT EXISTS teams_typeteam (
 #   team_id   BIGINT NOT NULL,
 #   typeteam_id BIGINT NOT NULL,
@@ -46,12 +50,12 @@
 #       staff_specialties.specialty_id=specialties.id
 # ORDER BY teams.id;
 
-SELECT staff.id,first_name,last_name,age,specialties.name,salary
-FROM staff,specialties,staff_specialties,projects
-WHERE staff.id=staff_specialties.staff_id AND
-      staff_specialties.specialty_id=specialties.id AND
-      specialties.name='Project Manager' AND
-      projects.projects_manager_id<>staff.id;
+# SELECT staff.id,first_name,last_name,age,specialties.name,salary
+# FROM staff,specialties,staff_specialties,projects
+# WHERE staff.id=staff_specialties.staff_id AND
+#       staff_specialties.specialty_id=specialties.id AND
+#       specialties.name='Project Manager' AND
+#       projects.projects_manager_id<>staff.id;
 
 
 

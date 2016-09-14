@@ -46,7 +46,7 @@ public class InputScreen {
     private void InputScreenChangeTeam() {
        ArrayList<Integer> idTeamList = workingWithMySQL.showAllTeam(changeNumberProject);
         Integer deleteTeamId = inputInt(idTeamList,"Select a team.Input id");
-        workingWithMySQL.changeDeleteTeam(changeNumberProject,deleteTeamId);
+        workingWithMySQL.changeDeleteTeam(deleteTeamId);
     }
 
     private void InputScreenNewProjectManager() {
@@ -85,7 +85,7 @@ public class InputScreen {
         Integer projectManagerId = inputInt(idProjectManagerList,"Select a project manager.Input id");
         countProject++;
 
-        workingWithMySQL.writeProject(countProject, nameProject, descriptionProject, projectManagerId);
+        workingWithMySQL.writeProject( nameProject, descriptionProject, projectManagerId);
         createMapTeam(countProject,"Developers");
         createMapTeam(countProject,"Testers");
 

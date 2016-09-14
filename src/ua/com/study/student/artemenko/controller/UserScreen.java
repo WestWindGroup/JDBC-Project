@@ -11,7 +11,6 @@ public class UserScreen {
     private String nameScreenShow = "SHOW PROJECTS";
     private String nameScreenChange = "CHANGE PROJECT";
     private String nameScreenDelete = "DELETE PROJECT";
-    private String nameScreenEditProject = "EDIT PROJECT";
     private String nameScreenEditTeam = "EDIT TEAM";
     private String nameScreenAddTeam = "ADD TEAM";
     private String nameScreenSelectProject = "SELECT ANOTHER PROJECT";
@@ -27,7 +26,6 @@ public class UserScreen {
     private String pathToTheFileWithName_Show = "resources\\Screen\\Show.txt";
     private String pathToTheFileWithName_Change = "resources\\Screen\\Change.txt";
     private String pathToTheFileWithName_Delete = "resources\\Screen\\Delete.txt";
-    private String pathToTheFileWithName_EditProject = "resources\\Screen\\EditProject.txt";
     private String pathToTheFileWithName_EditTeam = "resources\\Screen\\EditTeam.txt";
     private String pathToTheFileWithName_AddTeam = "resources\\Screen\\AddTeam.txt";
     private String pathToTheFileWithName_selectProject = "resources\\Screen\\selectProject.txt";
@@ -54,7 +52,6 @@ public class UserScreen {
         interfaceScreenMap.put(nameScreenShow, new InterfaceScreen(pathToTheFileWithName_Show));
         interfaceScreenMap.put(nameScreenChange, new InterfaceScreen(pathToTheFileWithName_Change));
         interfaceScreenMap.put(nameScreenDelete, new InterfaceScreen(pathToTheFileWithName_Delete));
-        interfaceScreenMap.put(nameScreenEditProject, new InterfaceScreen(pathToTheFileWithName_EditProject));
         interfaceScreenMap.put(nameScreenEditTeam, new InterfaceScreen(pathToTheFileWithName_EditTeam));
         interfaceScreenMap.put(nameScreenAddTeam, new InterfaceScreen(pathToTheFileWithName_AddTeam));
         interfaceScreenMap.put(nameScreenSelectProject, new InterfaceScreen(pathToTheFileWithName_selectProject));
