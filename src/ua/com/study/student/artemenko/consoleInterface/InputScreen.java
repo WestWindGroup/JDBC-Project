@@ -11,7 +11,7 @@ public class InputScreen {
     private static WorkingWithMySQL workingWithMySQL = new WorkingWithMySQL();
     private static int countProject = 0;
     private static int countTeam = 0;
-
+    private static int changeNumberProject = 0;
     public void choiceInputScreen(String nameScreen) {
         switch (nameScreen) {
             case ("CREATE PROJECT"):
@@ -23,25 +23,64 @@ public class InputScreen {
             case ("SELECT ANOTHER PROJECT"):
                 InputScreenSelectProject();
                 break;
+            case ("CHANGE NAME PROJECT"):
+                InputNewNameProject();
+                break;
+            case ("CHANGE DESCRIPTION"):
+                InputNewDescriptionProject();
+                break;
+            case ("CHANGE PROJECT MANAGER"):
+                InputScreenNewProjectManager();
+                break;
+            case ("CHANGE PROJECT"):
+                changeNumberProject = InputScreenShowProject();
+                break;
+            case ("DELETE TEAM"):
+                InputScreenChangeTeam();
+                break;
+
 
         }
+    }
+
+    private void InputScreenChangeTeam() {
+       ArrayList<Integer> idTeamList = workingWithMySQL.showAllTeam(changeNumberProject);
+        Integer deleteTeamId = inputInt(idTeamList,"Select a team.Input id");
+        workingWithMySQL.changeDeleteTeam(changeNumberProject,deleteTeamId);
+    }
+
+    private void InputScreenNewProjectManager() {
+        ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
+        Integer projectManagerId = inputInt(idProjectManagerList,"Select a project manager.Input id");
+        workingWithMySQL.changeProjectManager(changeNumberProject,projectManagerId);
+    }
+
+    private void InputNewDescriptionProject() {
+        String newDescriptionProject = inputString("Enter the description of the project");
+        workingWithMySQL.changeDescriptionProject(changeNumberProject,newDescriptionProject);
+    }
+
+    private void InputNewNameProject() {
+        String newNameProject = inputString("Enter the name of the project");
+        workingWithMySQL.changeNameProject(changeNumberProject,newNameProject);
     }
 
     private void InputScreenSelectProject() {
         UserScreen.setInterfaceScreen("SHOW PROJECTS");
     }
 
-    private void InputScreenShowProject() {
+    private Integer InputScreenShowProject() {
         ArrayList<Integer> listIdProject = workingWithMySQL.showProjects();
-        Integer projectId = inputInt(listIdProject,"Select a project.Input id");
+        Integer projectId = inputInt(listIdProject, "Select a project.Input id");
 
         workingWithMySQL.showProject(projectId);
+        return projectId;
     }
 
     private void InputScreenCreateProject() {
 
         String nameProject = inputString("Enter the name of the project");
-        String descriptionProject = inputString("Enter the name of the project");
+        String descriptionProject = inputString("Enter the description of the project");
         ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
         Integer projectManagerId = inputInt(idProjectManagerList,"Select a project manager.Input id");
         countProject++;

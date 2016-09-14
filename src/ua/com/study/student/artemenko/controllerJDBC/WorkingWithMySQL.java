@@ -29,14 +29,13 @@ public class WorkingWithMySQL {
     }
 
     public ArrayList<Integer> showAllProjectManager() {
-
-        String sql = "SELECT staff.id,first_name,last_name,age,name,salary " +
-                        "FROM staff,specialties,staff_specialties,team_staff " +
+        String sql = "SELECT staff.id,first_name,last_name,age,specialties.name,salary " +
+                        "FROM staff,specialties,staff_specialties,projects " +
                         "WHERE staff.id=staff_specialties.staff_id AND " +
-                        "specialties.id=specialty_id AND " +
-                        "specialties.name='Project Manager' AND " +
-                        "team_staff.staff_id=staff.id AND " +
-                        "team_staff.team_id IS NULL;";
+                                "staff_specialties.specialty_id=specialties.id AND  " +
+                                "specialties.name='Project Manager' AND " +
+                                "projects.projects_manager_id<>staff.id;";
+
         ArrayList<Integer> projectManagerList = helpRequest(sql);
 
 //
@@ -138,7 +137,7 @@ public class WorkingWithMySQL {
                 String first_name = resultSet.getString("first_name");
                 String last_name = resultSet.getString("last_name");
                 int age = resultSet.getInt("age");
-                String nameSpecialty = resultSet.getString("name");
+                String nameSpecialty = resultSet.getString("specialties.name");
                 double salary = resultSet.getInt("salary");
 
                 String str =
@@ -215,18 +214,9 @@ public class WorkingWithMySQL {
     public void showProject(Integer projectId) {
         String sql1 = "SELECT projects.id,name,description,last_name AS project_manager " +
                 "FROM projects,staff " +
-                "WHERE projects_manager_id=staff.id AND projects.id=" + projectId + ";";
-        String sql2 = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
-                "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
-                "WHERE projects.id=project_teams.project_id AND " +
-                "      project_teams.teams_id=teams.id AND " +
-                "      teams.id=teams_typeteam.team_id AND " +
-                "      teams_typeteam.typeteam_id=typeteam.id AND " +
-                "      staff.id=team_staff.staff_id AND " +
-                "      team_staff.team_id=teams.id AND " +
-                "      staff_specialties.staff_id=staff.id AND " +
-                "      staff_specialties.specialty_id=specialties.id " +
-                "ORDER BY teams.id;";
+                "WHERE projects_manager_id=staff.id AND " +
+                "       projects.id=" + projectId + ";";
+
         System.out.println(" =======================================================================");
         String strH1 =
                 String.format("||  %5s  |  %15s  |  %15s  |  %15s  ||",
@@ -250,18 +240,63 @@ public class WorkingWithMySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-//        System.out.println("-----------------------------------------------------------------------");
-        System.out.println(" -----------------------------------------------------------------------==========================================");
+        showAllTeam(projectId);
+//
+    }
+
+    public void changeNameProject(int changeNumberProject,String newNameProject) {
+        String sql = "UPDATE projects SET name='" + newNameProject + "' WHERE projects.id=" + changeNumberProject + ";";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeDescriptionProject(int changeNumberProject,String newDescriptionProject) {
+        String sql = "UPDATE projects SET description='" + newDescriptionProject + "' WHERE projects.id=" + changeNumberProject + ";";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeProjectManager(int changeNumberProject, int projectManagerId) {
+        String sql = "UPDATE projects SET projects_manager_id='" + projectManagerId + "' WHERE projects.id=" + changeNumberProject + ";";
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Integer> showAllTeam(Integer projectId) {
+        ArrayList<Integer> idTeamList = new ArrayList<>();
+        String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
+                "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
+                "WHERE projects.id=project_teams.project_id AND " +
+                "      project_teams.teams_id=teams.id AND " +
+                "      teams.id=teams_typeteam.team_id AND " +
+                "      teams_typeteam.typeteam_id=typeteam.id AND " +
+                "      staff.id=team_staff.staff_id AND " +
+                "      team_staff.team_id=teams.id AND " +
+                "      staff_specialties.staff_id=staff.id AND " +
+                "      staff_specialties.specialty_id=specialties.id  AND " +
+                "       projects.id=" + projectId +
+                " ORDER BY teams.id;";
+        System.out.println(" =================================================================================================================");
         String strH2 =
                 String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
                         "id_project","id_team","name","last_name", "id_staff","specialty","salary");
         System.out.println(strH2);
         System.out.println(" -----------------------------------------------------------------------------------------------------------------");
 
-        try (ResultSet resultSet = statement.executeQuery(sql2)) {
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 int id_project = resultSet.getInt("projects.id");
                 int teams_id = resultSet.getInt("teams.id");
+                idTeamList.add(teams_id);
                 String typeteam_name = resultSet.getString("typeteam.name");
                 String last_name = resultSet.getString("staff.last_name");
                 int id_staff = resultSet.getInt("id_staff");
@@ -276,6 +311,22 @@ public class WorkingWithMySQL {
             }
             System.out.println(" =================================================================================================================");
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idTeamList;
+    }
+
+    public void changeDeleteTeam(int changeNumberProject, int deleteTeamId) {
+        String sql1 = "DELETE id FROM teams WHERE id="+ deleteTeamId + ";";
+        String sql2 = "DELETE team_id FROM teams_typeteam WHERE team_id="+ deleteTeamId + ";";
+        String sql3 = "DELETE teams_id FROM project_teams WHERE teams_id="+ deleteTeamId + ";";
+        String sql4 = "UPDATE team_staff SET team_id=NULL WHERE team_id=" + deleteTeamId + ";";
+        try {
+            statement.execute(sql1);
+            statement.execute(sql2);
+            statement.execute(sql3);
+            statement.execute(sql4);
         } catch (SQLException e) {
             e.printStackTrace();
         }
