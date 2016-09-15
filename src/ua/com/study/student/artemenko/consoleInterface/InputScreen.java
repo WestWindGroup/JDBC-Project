@@ -19,6 +19,7 @@ public class InputScreen {
                 InputScreenCreateProject();
                 break;
             case ("DELETE PROJECT"):
+                InputScreenShowProject();
                 InputScreenDeleteProject();
                 break;
             case ("SHOW PROJECTS"):
@@ -69,6 +70,11 @@ public class InputScreen {
         }
     }
 
+    private void InputScreenDeleteProject() {
+
+        workingWithMySQL.changeDeleteProject(changeNumberProject);
+    }
+
     private void InputScreenAddMemberTeam() {
         boolean endWork = false;
         ArrayList<Integer> idMemberList = workingWithMySQL.requestIdMember(changeNumberTeam);
@@ -105,8 +111,6 @@ public class InputScreen {
 
     private void InputScreenAddTeam() {
         boolean endWork = false;
-        boolean showTeam = true;
-        //workingWithMySQL.requestAllTeam(changeNumberProject,showTeam);
 
         while (!endWork) {
             int selectTypeTeam = inputInt("Select the type of team. 1 developers , 2 testers .");

@@ -392,7 +392,37 @@ public class WorkingWithMySQL {
         return idTeamList;
     }
 
+    private ArrayList<Integer> listIdTeamInProject(int idProject){
+        ArrayList<Integer> testResult = new ArrayList<>();
+        String sql = "SELECT teams_id FROM project_teams WHERE project_id="+ idProject + ";";
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                int result = resultSet.getInt("teams_id");
+                testResult.add(result);
+            }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return testResult;
+    }
+
+    public void changeDeleteProject(int deleteProjectId) {
+
+        ArrayList<Integer> testResult = listIdTeamInProject(deleteProjectId);
+        for (Integer in : testResult){
+            changeDeleteTeam(in);
+        }
+
+        String sql = "DELETE FROM projects WHERE id="+ deleteProjectId + ";";
+
+        try {
+            statement.execute(sql);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void changeDeleteTeam(int deleteTeamId) {
 
@@ -492,4 +522,6 @@ public class WorkingWithMySQL {
 
         return helpList;
     }
+
+
 }
