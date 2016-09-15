@@ -44,11 +44,11 @@ public class WorkingWithMySQL {
                     "specialties.name='Project Manager';";
         }else{
             sql2 = "SELECT staff.id,first_name,last_name,age,specialties.name,salary " +
-                    "FROM staff,specialties,staff_specialties,projects " +
+                    "FROM staff,specialties,staff_specialties " +
                     "WHERE staff.id=staff_specialties.staff_id AND " +
                     "staff_specialties.specialty_id=specialties.id AND  " +
                     "specialties.name='Project Manager' AND " +
-                    "projects.projects_manager_id<>staff.id;";
+                    "staff.id NOT IN (SELECT projects.projects_manager_id FROM projects);";
         }
 
         ArrayList<Integer> projectManagerList = helpRequest(sql2);
@@ -124,7 +124,7 @@ public class WorkingWithMySQL {
         }
     }
 
-    public int writeTeams(String nameTeam) {
+    public int writeTeams(String nameTeam) throws SQLException {
         String sql1 = "INSERT INTO teams (name_team) VALUES('" + nameTeam + "');";
         String sql2 = "SELECT id FROM teams WHERE name_team='" + nameTeam + "';";
         int help = 0;
@@ -132,6 +132,7 @@ public class WorkingWithMySQL {
             statement.execute(sql1);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new SQLException();
         }
         try (ResultSet resultSet = statement.executeQuery(sql2)){
             while (resultSet.next()) {
@@ -246,6 +247,7 @@ public class WorkingWithMySQL {
     }
 
     public void showProject(Integer projectId) {
+        boolean showTeam = true;
         String sql1 = "SELECT projects.id,name,description,last_name AS project_manager " +
                 "FROM projects,staff " +
                 "WHERE projects_manager_id=staff.id AND " +
@@ -274,7 +276,7 @@ public class WorkingWithMySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        showAllTeam(projectId);
+        requestAllTeam(projectId,showTeam);
 //
     }
 
@@ -305,8 +307,43 @@ public class WorkingWithMySQL {
         }
     }
 
-    public ArrayList<Integer> showAllTeam(Integer projectId) {
-        ArrayList<Integer> idTeamList = new ArrayList<>();
+    private void showTeams(boolean showHead,int id_project,int teams_id, String typeteam_name,
+                           String last_name,int id_staff,String specialty,double salary){
+        if(showHead){
+            System.out.println(" =================================================================================================================");
+            String strH2 =
+                    String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
+                            "id_project","id_team","name","last_name", "id_staff","specialty","salary");
+            System.out.println(strH2);
+            System.out.println(" =================================================================================================================");
+        }
+
+        String str =
+                String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
+                        id_project,teams_id,typeteam_name,last_name, id_staff,specialty,salary);
+
+        System.out.println(str);
+        System.out.println(" -----------------------------------------------------------------------------------------------------------------");
+    }
+
+    public void requestTeam(Integer teamId,boolean showTeams){
+        String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
+                "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
+                "WHERE projects.id=project_teams.project_id AND " +
+                "      project_teams.teams_id=teams.id AND " +
+                "      teams.id=teams_typeteam.team_id AND " +
+                "      teams_typeteam.typeteam_id=typeteam.id AND " +
+                "      staff.id=team_staff.staff_id AND " +
+                "      team_staff.team_id=teams.id AND " +
+                "      staff_specialties.staff_id=staff.id AND " +
+                "      staff_specialties.specialty_id=specialties.id  AND " +
+                "       teams.id=" + teamId + ";";
+
+        //return
+                requestTeamBD(sql,showTeams);
+    }
+    public ArrayList<Integer> requestAllTeam(Integer projectId,boolean showTeams) {
+
         String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
                 "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
                 "WHERE projects.id=project_teams.project_id AND " +
@@ -319,15 +356,17 @@ public class WorkingWithMySQL {
                 "      staff_specialties.specialty_id=specialties.id  AND " +
                 "       projects.id=" + projectId +
                 " ORDER BY teams.id;";
-        System.out.println(" =================================================================================================================");
-        String strH2 =
-                String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
-                        "id_project","id_team","name","last_name", "id_staff","specialty","salary");
-        System.out.println(strH2);
-        System.out.println(" -----------------------------------------------------------------------------------------------------------------");
 
+        return requestTeamBD(sql,showTeams);
+    }
+
+    private ArrayList<Integer> requestTeamBD(String sql,boolean showTeamsHelp) {
+        ArrayList<Integer> idTeamList = new ArrayList<>();
+        boolean showHead;
+        int count = 0;
         try (ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
+                count++;
                 int id_project = resultSet.getInt("projects.id");
                 int teams_id = resultSet.getInt("teams.id");
                 idTeamList.add(teams_id);
@@ -335,21 +374,25 @@ public class WorkingWithMySQL {
                 String last_name = resultSet.getString("staff.last_name");
                 int id_staff = resultSet.getInt("id_staff");
                 String specialty = resultSet.getString("specialty");
-                double salary = resultSet.getInt("specialties.salary");
+                int salary = resultSet.getInt("specialties.salary");
+                if(showTeamsHelp){
+                    if(count == 1){
+                        showHead = true;
+                    }
+                    else{
+                        showHead = false;
+                    }
+                    showTeams(showHead,id_project,teams_id,typeteam_name,last_name,id_staff,specialty,salary);
+                }
 
-                String str =
-                        String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
-                                id_project,teams_id,typeteam_name,last_name, id_staff,specialty,salary);
-
-                System.out.println(str);
             }
-            System.out.println(" =================================================================================================================");
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return idTeamList;
     }
+
+
 
     public void changeDeleteTeam(int deleteTeamId) {
 
@@ -384,5 +427,69 @@ public class WorkingWithMySQL {
         }else{
             return false;
         }
+    }
+
+    public ArrayList<Integer> requestIdMemberTeam(int changeNumberTeam) {
+        ArrayList<Integer> idStaffList = new ArrayList<>();
+        String sql = "SELECT staff_id FROM team_staff WHERE team_id=" + changeNumberTeam + ";";
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                int result = resultSet.getInt("staff_id");
+                idStaffList.add(result);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idStaffList;
+    }
+
+    public void deleteMemberTeam(int selectMemberTeam) {
+        String sql1 = "UPDATE team_staff SET team_id=NULL WHERE staff_id=" + selectMemberTeam + ";";
+
+        try {
+            statement.execute(sql1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addMemberTeam(int changeNumberTeam,int selectMemberTeam) {
+        String sql1 = "UPDATE team_staff SET team_id=" + changeNumberTeam + " WHERE staff_id=" + selectMemberTeam + ";";
+
+        try {
+            statement.execute(sql1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int typeTeam(int idTeam){
+        String sql = "SELECT typeteam_id " +
+                "FROM teams_typeteam " +
+                "WHERE team_id=" + idTeam +
+                ";";
+        int result = 0;
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                result = resultSet.getInt("typeteam_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public ArrayList<Integer> requestIdMember(int idTeam) {
+        ArrayList<Integer> helpList;
+
+        int typeTeam = typeTeam(idTeam);
+        if(typeTeam == 1){
+            helpList = showAllDevelopers();
+        }else{
+            helpList = showAllTesters();
+        }
+
+        return helpList;
     }
 }

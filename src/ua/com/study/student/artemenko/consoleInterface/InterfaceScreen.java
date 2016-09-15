@@ -12,6 +12,7 @@ public class InterfaceScreen {
     private Map<Integer, String> mapListScreenView = new HashMap<>();
     private Map<Integer, InterfaceScreen> mapListInterfaceScreen = new HashMap<>();
     private InputScreen inputScreen;
+    private static boolean showInputScreen = true;
 
     public InterfaceScreen(String path){
         readFromFileList(path);
@@ -39,10 +40,10 @@ public class InterfaceScreen {
     }
 
     public void showInterfaceScreen(){
-        //printLine();
         showString(headScreen);
-        inputScreen.choiceInputScreen(this.headScreen);
-        //printLine();
+        if (showInputScreen) {
+            inputScreen.choiceInputScreen(this.headScreen);
+        }
         showMapList(mapListScreenView);
         printLine();
     }
@@ -52,6 +53,14 @@ public class InterfaceScreen {
         for (Map.Entry<Integer,String> setHelpIter : set) {
             System.out.println(setHelpIter.getKey() + ". " + setHelpIter.getValue());
         }
+    }
+
+    public static boolean isShowInputScreen() {
+        return showInputScreen;
+    }
+
+    public static void setShowInputScreen(boolean showInputScreen) {
+        InterfaceScreen.showInputScreen = showInputScreen;
     }
 
     private void showString(String headScreen) {
