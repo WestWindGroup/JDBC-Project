@@ -1,8 +1,5 @@
 package ua.com.study.student.artemenko.controllerJDBC;
 
-import ua.com.study.student.artemenko.project.Person;
-import ua.com.study.student.artemenko.project.Specialty;
-import ua.com.study.student.artemenko.project.Staff;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -29,16 +26,33 @@ public class WorkingWithMySQL {
     }
 
     public ArrayList<Integer> showAllProjectManager() {
-        String sql = "SELECT staff.id,first_name,last_name,age,specialties.name,salary " +
-                        "FROM staff,specialties,staff_specialties,projects " +
-                        "WHERE staff.id=staff_specialties.staff_id AND " +
-                                "staff_specialties.specialty_id=specialties.id AND  " +
-                                "specialties.name='Project Manager' AND " +
-                                "projects.projects_manager_id<>staff.id;";
+        int lengthProjects = 0;
+        String sql1 = "SELECT COUNT(1) AS length FROM projects;";
+        try (ResultSet resultSet = statement.executeQuery(sql1)){
+            while (resultSet.next()) {
+                lengthProjects  = resultSet.getInt("length");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String sql2;
+        if(lengthProjects == 0){
+            sql2 = "SELECT staff.id,first_name,last_name,age,specialties.name,salary " +
+                    "FROM staff,specialties,staff_specialties " +
+                    "WHERE staff.id=staff_specialties.staff_id AND " +
+                    "staff_specialties.specialty_id=specialties.id AND  " +
+                    "specialties.name='Project Manager';";
+        }else{
+            sql2 = "SELECT staff.id,first_name,last_name,age,specialties.name,salary " +
+                    "FROM staff,specialties,staff_specialties,projects " +
+                    "WHERE staff.id=staff_specialties.staff_id AND " +
+                    "staff_specialties.specialty_id=specialties.id AND  " +
+                    "specialties.name='Project Manager' AND " +
+                    "projects.projects_manager_id<>staff.id;";
+        }
 
-        ArrayList<Integer> projectManagerList = helpRequest(sql);
+        ArrayList<Integer> projectManagerList = helpRequest(sql2);
 
-//
         return projectManagerList;
     }
 
@@ -71,14 +85,24 @@ public class WorkingWithMySQL {
         return projectManagerList;
     }
 
-    public void writeProject(String name,String description,int projects_manager_id) {
-        String sql = "INSERT INTO projects (name,description,projects_manager_id) " +
+    public int writeProject(String name,String description,int projects_manager_id) {
+        String sql1 = "INSERT INTO projects (name,description,projects_manager_id) " +
                 "VALUES('" + name + "','" + description + "'," + projects_manager_id + ");";
+        String sql2 = "SELECT id FROM projects WHERE name='" + name + "';";
+        int help = 0;
         try {
-            statement.execute(sql);
+            statement.execute(sql1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        try (ResultSet resultSet = statement.executeQuery(sql2)){
+            while (resultSet.next()) {
+                help = resultSet.getInt("projects.id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return help;
     }
 
     public void writeTeamStaff(int team_id,int staff_id) {
@@ -100,15 +124,25 @@ public class WorkingWithMySQL {
         }
     }
 
-    public void writeTeams(int numberTeam) {
-        String sql = "INSERT INTO teams " +
-                "VALUES(" + numberTeam + ");";
+    public int writeTeams(String nameTeam) {
+        String sql1 = "INSERT INTO teams (name_team) VALUES('" + nameTeam + "');";
+        String sql2 = "SELECT id FROM teams WHERE name_team='" + nameTeam + "';";
+        int help = 0;
         try {
-            statement.execute(sql);
+            statement.execute(sql1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        try (ResultSet resultSet = statement.executeQuery(sql2)){
+            while (resultSet.next()) {
+                help = resultSet.getInt("teams.id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return help;
     }
+
 
     public void writeTeamsTypeteam(int team_id, int typeteam_id) {
         String sql = "INSERT INTO teams_typeteam (team_id,typeteam_id) " +
@@ -331,6 +365,24 @@ public class WorkingWithMySQL {
             statement.execute(sql4);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean testNameProject(String testName) {
+        String sql = "SELECT projects.name FROM projects WHERE projects.name='" + testName + "';";
+        String testResult = null;
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                testResult = resultSet.getString("projects.name");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(testResult == null){
+            return true;
+        }else{
+            return false;
         }
     }
 }

@@ -1,15 +1,21 @@
 # SELECT projects.id,name,description,last_name AS project_manager FROM projects,staff WHERE projects_manager_id=staff.id;
--- SELECT staff.id,first_name,last_name,name,salary
--- FROM staff,specialties,staff_specialties,team_staff
--- WHERE staff.id=staff_specialties.staff_id AND
--- specialties.id=specialty_id AND
--- specialties.name='Project Manager' AND
--- team_staff.staff_id=staff.id AND
--- team_staff.team_id IS NULL;
+# SELECT staff.id,first_name,last_name,name,salary
+# FROM staff,specialties,staff_specialties,team_staff
+# WHERE staff.id=staff_specialties.staff_id AND
+# specialties.id=specialty_id AND
+# specialties.name='Project Manager' AND
+# team_staff.staff_id=staff.id AND
+# team_staff.team_id IS NULL;
+# SELECT staff.id,first_name,last_name,age,specialties.name,salary
+# FROM staff,specialties,staff_specialties
+# WHERE staff.id=staff_specialties.staff_id AND
+# staff_specialties.specialty_id=specialties.id AND
+# specialties.name='Project Manager';
 # ALTER TABLE teams
 # ADD team_number BIGINT(20) NOT NULL ;
 # UPDATE teams SET team_number=3 WHERE id=3;
-DELETE FROM projects WHERE id=2;
+DELETE FROM projects WHERE id=8;
+# INSERT INTO teams VALUES(id);
 # INSERT INTO project_teams VALUE (1,2);
 # INSERT INTO teams_typeteam VALUE (2,1);
 # CREATE TABLE IF NOT EXISTS teams_typeteam (

@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS specialties (
   id   INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(50) NOT NULL,
   salary  DOUBLE   UNSIGNED NOT NULL,
+  UNIQUE (name),
   INDEX (name)
 )
   ENGINE = InnoDB;
@@ -34,15 +35,18 @@ CREATE TABLE IF NOT EXISTS projects (
   name        VARCHAR(50)   NOT NULL,
   description VARCHAR(1000) NOT NULL,
   projects_manager_id BIGINT(20) NOT NULL,
+  UNIQUE (name, projects_manager_id),
   INDEX (name)
+
 )
   ENGINE = InnoDB;
 
 -- Table: teams
 CREATE TABLE IF NOT EXISTS teams (
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-
-  UNIQUE (id)
+  name_team   VARCHAR(100)   NOT NULL  ,
+  INDEX (name_team),
+  UNIQUE (name_team)
 )
   ENGINE = InnoDB;
 
@@ -50,7 +54,7 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS typeteam(
   id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name        VARCHAR(1000)   NOT NULL,
-  UNIQUE (id, name)
+  UNIQUE (name)
 )
   ENGINE = InnoDB;
 
