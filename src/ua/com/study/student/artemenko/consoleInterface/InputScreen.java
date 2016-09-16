@@ -4,7 +4,6 @@ import ua.com.study.student.artemenko.controller.Controller;
 import ua.com.study.student.artemenko.controller.UserScreen;
 import ua.com.study.student.artemenko.controllerJDBC.WorkingWithMySQL;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class InputScreen {
@@ -19,7 +18,6 @@ public class InputScreen {
                 InputScreenCreateProject();
                 break;
             case ("DELETE PROJECT"):
-                InputScreenShowProject();
                 InputScreenDeleteProject();
                 break;
             case ("SHOW PROJECTS"):
@@ -28,54 +26,41 @@ public class InputScreen {
             case ("SELECT ANOTHER PROJECT"):
                 InputScreenSelectProject();
                 break;
-
             case ("CHANGE NAME PROJECT"):
-                InputScreenShowProject();
                 InputNewNameProject();
                 break;
             case ("CHANGE DESCRIPTION"):
-                InputScreenShowProject();
                 InputNewDescriptionProject();
                 break;
             case ("CHANGE PROJECT MANAGER"):
-                InputScreenShowProject();
                 InputScreenNewProjectManager();
                 break;
-            case ("CHANGE PROJECT"):
-//                changeNumberProject = InputScreenShowProject();
-                break;
             case ("DELETE TEAM"):
-                InputScreenShowProject();
                 InputScreenDeleteTeam();
                 break;
             case ("ADD TEAM"):
-                InputScreenShowProject();
                 InputScreenAddTeam();
                 break;
             case ("EDIT TEAM"):
                 InputScreenEditTeam();
                 break;
             case ("DELETE A MEMBER OF THE TEAM"):
-                InputScreenShowProject();
-                InputScreenShowTeam();
                 InputScreenDeleteMemberTeam();
                 break;
             case ("ADD A MEMBER OF THE TEAM"):
-                InputScreenShowProject();
-                InputScreenShowTeam();
                 InputScreenAddMemberTeam();
                 break;
-
-
         }
     }
 
     private void InputScreenDeleteProject() {
-
+        InputScreenShowProject();
         workingWithMySQL.changeDeleteProject(changeNumberProject);
     }
 
     private void InputScreenAddMemberTeam() {
+        InputScreenShowProject();
+        InputScreenShowTeam();
         boolean endWork = false;
         ArrayList<Integer> idMemberList = workingWithMySQL.requestIdMember(changeNumberTeam);
         while (!endWork) {
@@ -93,6 +78,8 @@ public class InputScreen {
     }
 
     private void InputScreenDeleteMemberTeam() {
+        InputScreenShowProject();
+        InputScreenShowTeam();
         boolean endWork = false;
         ArrayList<Integer> idMemberList = workingWithMySQL.requestIdMemberTeam(changeNumberTeam);
         while (!endWork) {
@@ -110,6 +97,7 @@ public class InputScreen {
     }
 
     private void InputScreenAddTeam() {
+        InputScreenShowProject();
         boolean endWork = false;
 
         while (!endWork) {
@@ -144,6 +132,7 @@ public class InputScreen {
     }
 
     private void InputScreenDeleteTeam() {
+        InputScreenShowProject();
         boolean showTeam = true;
         ArrayList<Integer> idTeamList = workingWithMySQL.requestAllTeam(changeNumberProject,showTeam);
         if(idTeamList.size() != 0){
@@ -161,17 +150,47 @@ public class InputScreen {
     }
 
     private void InputScreenNewProjectManager() {
+        InputScreenShowProject();
+        Integer idPM = idProjectManager();
+        if(idPM != null){
+            workingWithMySQL.changeProjectManager(changeNumberProject, idPM);
+        }
+    }
+
+    private Integer idProjectManager() {
+        Integer projectManagerId = null;
+        boolean controlId = true;
+        boolean endWork = false;
         ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
-        Integer projectManagerId = inputInt(idProjectManagerList, "Select the project manager.Input id");
-        workingWithMySQL.changeProjectManager(changeNumberProject, projectManagerId);
+        if (idProjectManagerList.size() != 0) {
+            while (!endWork) {
+                projectManagerId = inputInt("Select the project manager.Input id");
+                for (Integer id : idProjectManagerList) {
+                    if (id == projectManagerId) {
+                        endWork = true;
+                        controlId = false;
+                        break;
+                    }
+                }
+                if(controlId){
+                    System.out.println("Incorrect input");
+                }
+            }
+        }else{
+            System.out.println("All project managers are busy.");
+            return null;
+        }
+        return projectManagerId;
     }
 
     private void InputNewDescriptionProject() {
+        InputScreenShowProject();
         String newDescriptionProject = inputString("Enter the description of the project");
         workingWithMySQL.changeDescriptionProject(changeNumberProject, newDescriptionProject);
     }
 
     private void InputNewNameProject() {
+        InputScreenShowProject();
         String newNameProject = inputString("Enter the name of the project");
         workingWithMySQL.changeNameProject(changeNumberProject, newNameProject);
     }
@@ -181,10 +200,22 @@ public class InputScreen {
     }
 
     private void InputScreenShowProject() {
-        ArrayList<Integer> listIdProject = workingWithMySQL.showProjects();
-        if ((listIdProject.size() != 0) && (InterfaceScreen.isShowInputScreen())) {
-            changeNumberProject = inputInt(listIdProject, "Select the project.Input id");
-            workingWithMySQL.showProject(changeNumberProject);
+        boolean endWork = false;
+        boolean controlInput = false;
+        ArrayList<Integer> listIdProject = workingWithMySQL.requestProjects();
+        if (listIdProject.size() != 0) {
+            while (!endWork) {
+                changeNumberProject = inputInt("Select the project.Input id");
+                try {
+                    workingWithMySQL.requestProject(changeNumberProject);
+                    controlInput = true;
+                } catch (Exception e) {
+                    System.out.println("Incorrect input");
+                }
+                if(controlInput) {
+                    endWork = true;
+                }
+            }
         }
     }
 
@@ -207,16 +238,13 @@ public class InputScreen {
         String nameProject = null;
         while (!testNameProject) {
             nameProject = inputString("Enter the name of the project");
-            testNameProject = workingWithMySQL.testNameProject(nameProject);
+            testNameProject = workingWithMySQL.testNamePr(nameProject);
             if (!testNameProject) {
                 System.out.println("Project with the same name exists");
             }
         }
-
         String descriptionProject = inputString("Enter the description of the project");
-        ArrayList<Integer> idProjectManagerList = workingWithMySQL.showAllProjectManager();
-        Integer projectManagerId = inputInt(idProjectManagerList, "Select the project manager.Input id");
-
+        Integer projectManagerId = idProjectManager();
         int projectID = workingWithMySQL.writeProject(nameProject, descriptionProject, projectManagerId);
 
         createMapTeam(projectID, "Developers");
@@ -228,29 +256,45 @@ public class InputScreen {
     private void createMapTeam(int projectID, String messenger) {
         int typeTeam = workingWithMySQL.returnTypeTeam(messenger);
         boolean endWork = false;
+        boolean controlName = true;
         while (!endWork) {
             ArrayList<Integer> listIdStaffInTeam = inputTeam(messenger);
             if (listIdStaffInTeam.size() != 0) {
                 String nameTeam = inputString("Input name team");
-                int idTeam = 0;
-                try{
-                    idTeam = workingWithMySQL.writeTeams(nameTeam);
+                ArrayList<String> listNameTeams = workingWithMySQL.listNameTeams();
+                for (String str:listNameTeams) {
+                    if(str.equals(nameTeam)){
+                        System.out.println("Incorrect name");
+                        controlName = false;
+                    }
+                    else{
+                        controlName = true;
+                        break;
+                    }
+                }
+                if(controlName){
+                    int idTeam = workingWithMySQL.writeTeams(nameTeam);
                     workingWithMySQL.writeTeamsTypeteam(idTeam, typeTeam);
                     workingWithMySQL.writeProjectTeams(projectID, idTeam);
                     for (Integer integer : listIdStaffInTeam) {
                         workingWithMySQL.writeTeamStaff(idTeam, integer);
                     }
                     System.out.println("Create next team for project?");
-                    System.out.println("Input yes/no");
-                    String help = Controller.getScanner().nextLine();
-                    if (help.equals("no")) {
-                        endWork = true;
+                    boolean endWorkNext = false;
+                    while (!endWorkNext){
+                        System.out.println("Input y/n");
+                        if (Controller.getScanner().hasNext("n")) {
+                            Controller.getScanner().nextLine();
+                            endWork = true;
+                            endWorkNext = true;
+                        }
+                        else if (Controller.getScanner().hasNext("y")){
+                            Controller.getScanner().nextLine();
+                            endWorkNext = true;
+                        }
                     }
-                }catch (SQLException e){
-                    System.out.println("Incorrect name");
                 }
             }
-
         }
     }
 
@@ -282,28 +326,6 @@ public class InputScreen {
         return returnInt;
     }
 
-    private Integer inputInt(ArrayList<Integer> helpList, String messenger) {
-        Integer returnInteger = null;
-
-        boolean endWork = false;
-        System.out.println(messenger);
-
-        while (!endWork) {
-            int help = Controller.getScanner().nextInt();
-            for (Integer id : helpList) {
-                if (id == help) {
-                    returnInteger = help;
-                    endWork = true;
-                    break;
-                }
-            }
-            if (returnInteger == null) {
-                System.out.println("All project managers are busy.");
-                return null;
-            }
-        }
-        return returnInteger;
-    }
 
     private ArrayList<Integer> inputTeam(String messenger) {
         int countHelp = 0;

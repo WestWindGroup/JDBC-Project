@@ -9,7 +9,7 @@ public class Controller {
 
     private static Scanner scanner = new Scanner(System.in);
     private UserScreen user;
-    private String nameBeginScreen = "PROJECT";
+    private String nameBeginScreen = "HOME PAGE";
 
     public void startProgram() {
         try {

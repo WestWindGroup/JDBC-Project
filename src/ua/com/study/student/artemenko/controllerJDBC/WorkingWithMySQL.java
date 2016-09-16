@@ -12,7 +12,12 @@ public class WorkingWithMySQL {
     private static final String PASSWORD = "1234";
     private Connection connection;
     private Statement statement;
-    private String lineHelp = "------------------------------------------------------------------------------------------";
+    private String lineHelp = "--------------------------------------------" +
+                                "----------------------------------------------";
+    private String lineHelp2 = "----------------------------------" +
+                                "--------------------------------------";
+    private String lineHelp3 = " --------------------------------------------------------------" +
+                                    "---------------------------------------------------";
 
     public WorkingWithMySQL() {
         try {
@@ -124,15 +129,13 @@ public class WorkingWithMySQL {
         }
     }
 
-    public int writeTeams(String nameTeam) throws SQLException {
+    public int writeTeams(String nameTeam) {
         String sql1 = "INSERT INTO teams (name_team) VALUES('" + nameTeam + "');";
         String sql2 = "SELECT id FROM teams WHERE name_team='" + nameTeam + "';";
         int help = 0;
         try {
             statement.execute(sql1);
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException();
         }
         try (ResultSet resultSet = statement.executeQuery(sql2)){
             while (resultSet.next()) {
@@ -212,73 +215,71 @@ public class WorkingWithMySQL {
         return id;
     }
 
-    public ArrayList<Integer> showProjects() {
-        ArrayList<Integer> helpList = new ArrayList<>();
-        
+    private void showProjects(boolean showHead,String str){
+        if(showHead){
+            System.out.println(lineHelp2);
+            String strH =
+                    String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
+                            "id", "name project", "description","project_manager");
+            System.out.println(strH);
+            System.out.println(lineHelp2);
+        }
+        System.out.println(str);
+
+    }
+
+    public int requestProject(Integer projectId)throws Exception {
+        boolean showTeam = true;
+        String sql = "SELECT projects.id,name,description,last_name AS project_manager " +
+                "FROM projects,staff " +
+                "WHERE projects_manager_id=staff.id AND " +
+                "       projects.id=" + projectId + ";";
+
+
+        int result = requestProjectBD(sql).get(0);
+        requestAllTeam(projectId,showTeam);
+
+        return result;
+    }
+
+    public ArrayList<Integer> requestProjects() {
         String sql = "SELECT projects.id,name,description,last_name AS project_manager " +
                 "FROM projects,staff " +
                 "WHERE projects_manager_id=staff.id;";
-        System.out.println("------------------------------------------------------------------------");
-        String strH =
-                String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
-                        "id", "name project", "description","project_manager");
-        System.out.println(strH);
-        System.out.println("------------------------------------------------------------------------");
 
+        return requestProjectBD(sql);
+    }
+
+    private ArrayList<Integer> requestProjectBD(String sql){
+        ArrayList<Integer> helpList = new ArrayList<>();
+        boolean showHead;
+        int count = 0;
         try (ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
+                count++;
                 int id = resultSet.getInt("projects.id");
                 helpList.add(id);
                 String name_project = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String project_manager = resultSet.getString("project_manager");
-
-                String str =
-                        String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
+                if(count == 1){
+                    showHead = true;
+                }
+                else{
+                    showHead = false;
+                }
+                String str = String.format("|  %5s  |  %15s  |  %15s  |  %15s  |",
                                 id, name_project, description,project_manager);
+                showProjects(showHead,str);
 
-                System.out.println(str);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("------------------------------------------------------------------------");
+        System.out.println(lineHelp2);
         return helpList;
     }
 
-    public void showProject(Integer projectId) {
-        boolean showTeam = true;
-        String sql1 = "SELECT projects.id,name,description,last_name AS project_manager " +
-                "FROM projects,staff " +
-                "WHERE projects_manager_id=staff.id AND " +
-                "       projects.id=" + projectId + ";";
-
-        System.out.println(" =======================================================================");
-        String strH1 =
-                String.format("||  %5s  |  %15s  |  %15s  |  %15s  ||",
-                        "id", "name project", "description","project_manager");
-        System.out.println(strH1);
-        System.out.println(" -----------------------------------------------------------------------");
-
-        try (ResultSet resultSet = statement.executeQuery(sql1)) {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("projects.id");
-                String name_project = resultSet.getString("name");
-                String description = resultSet.getString("description");
-                String project_manager = resultSet.getString("project_manager");
-
-                String str =
-                        String.format("||  %5s  |  %15s  |  %15s  |  %15s  ||",
-                                id, name_project, description,project_manager);
-
-                System.out.println(str);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        requestAllTeam(projectId,showTeam);
-//
-    }
 
     public void changeNameProject(int changeNumberProject,String newNameProject) {
         String sql = "UPDATE projects SET name='" + newNameProject + "' WHERE projects.id=" + changeNumberProject + ";";
@@ -307,27 +308,23 @@ public class WorkingWithMySQL {
         }
     }
 
-    private void showTeams(boolean showHead,int id_project,int teams_id, String typeteam_name,
-                           String last_name,int id_staff,String specialty,double salary){
+    private void showTeams(boolean showHead,String str){
         if(showHead){
-            System.out.println(" =================================================================================================================");
+            System.out.println(lineHelp3);
             String strH2 =
                     String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
                             "id_project","id_team","name","last_name", "id_staff","specialty","salary");
             System.out.println(strH2);
-            System.out.println(" =================================================================================================================");
+            System.out.println(lineHelp3);
         }
-
-        String str =
-                String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
-                        id_project,teams_id,typeteam_name,last_name, id_staff,specialty,salary);
-
         System.out.println(str);
-        System.out.println(" -----------------------------------------------------------------------------------------------------------------");
+        System.out.println(lineHelp3);
     }
 
     public void requestTeam(Integer teamId,boolean showTeams){
-        String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
+        String sql =
+                "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name " +
+                                                                                    "AS specialty,specialties.salary " +
                 "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
                 "WHERE projects.id=project_teams.project_id AND " +
                 "      project_teams.teams_id=teams.id AND " +
@@ -339,12 +336,12 @@ public class WorkingWithMySQL {
                 "      staff_specialties.specialty_id=specialties.id  AND " +
                 "       teams.id=" + teamId + ";";
 
-        //return
                 requestTeamBD(sql,showTeams);
     }
     public ArrayList<Integer> requestAllTeam(Integer projectId,boolean showTeams) {
 
-        String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name AS specialty,specialties.salary " +
+        String sql = "SELECT projects.id,teams.id,typeteam.name,staff.last_name,staff.id AS id_staff,specialties.name " +
+                                                                                        "AS specialty,specialties.salary " +
                 "FROM projects,teams,typeteam,staff,specialties,staff_specialties,teams_typeteam,project_teams,team_staff " +
                 "WHERE projects.id=project_teams.project_id AND " +
                 "      project_teams.teams_id=teams.id AND " +
@@ -382,7 +379,10 @@ public class WorkingWithMySQL {
                     else{
                         showHead = false;
                     }
-                    showTeams(showHead,id_project,teams_id,typeteam_name,last_name,id_staff,specialty,salary);
+                    String str =
+                            String.format("||  %10s  |  %7s  |  %15s  |  %15s  |  %8s  |  %15s  |  %7s  ||",
+                                    id_project,teams_id,typeteam_name,last_name, id_staff,specialty,salary);
+                    showTeams(showHead,str);
                 }
 
             }
@@ -441,7 +441,7 @@ public class WorkingWithMySQL {
         }
     }
 
-    public boolean testNameProject(String testName) {
+    public boolean testNamePr(String testName) {
         String sql = "SELECT projects.name FROM projects WHERE projects.name='" + testName + "';";
         String testResult = null;
         try (ResultSet resultSet = statement.executeQuery(sql)) {
@@ -524,4 +524,16 @@ public class WorkingWithMySQL {
     }
 
 
+    public ArrayList<String> listNameTeams() {
+        String sql = "SELECT name_team  FROM teams;";
+        ArrayList<String> result = new ArrayList<>();
+        try (ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                result.add(resultSet.getString("name_team"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }
