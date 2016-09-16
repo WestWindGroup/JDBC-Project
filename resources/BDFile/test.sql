@@ -72,8 +72,9 @@
 #       specialties.name='Project Manager' AND
 #       staff.id NOT IN (SELECT projects.projects_manager_id FROM projects);
 
-
-
+# UPDATE staff SET age=30 WHERE id=102;
+# UPDATE staff SET age=28 WHERE id=103;
+INSERT INTO staff_specialties (staff_id, specialty_id) VALUES(62,1);
 
 
 

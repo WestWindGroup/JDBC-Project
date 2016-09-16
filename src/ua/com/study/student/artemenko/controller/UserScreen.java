@@ -23,6 +23,9 @@ public class UserScreen {
     private String nameScreenAddMemberTeam = "ADD A MEMBER OF THE TEAM";
     private String nameScreenHomePage = "HOME PAGE";
     private String nameScreenPersonnelData = "PERSONNEL DATA";
+    private String nameScreenAddPerson = "ADD PERSON";
+    private String nameScreenChangeSurname = "CHANGE SURNAME";
+    private String nameScreenDeletePerson = "DELETE PERSON";
 
 
     private String pathToTheFileWithName_Project = "resources\\Screen\\Project.txt";
@@ -42,6 +45,9 @@ public class UserScreen {
     private String pathToTheFileWithName_AddMemberTeam = "resources\\Screen\\AddMemberTeam.txt";
     private String pathToTheFileWithName_HomePage = "resources\\Screen\\HomePage.txt";
     private String pathToTheFileWithName_PersonnelData = "resources\\Screen\\PersonnelData.txt";
+    private String pathToTheFileWithName_AddPerson = "resources\\Screen\\AddPerson.txt";
+    private String pathToTheFileWithName_ChangeSurname = "resources\\Screen\\ChangeSurname.txt";
+    private String pathToTheFileWithName_DeletePerson = "resources\\Screen\\DeletePerson.txt";
 
     private static Map<String, InterfaceScreen> interfaceScreenMap;
     private static InterfaceScreen activeScreen;
@@ -72,6 +78,9 @@ public class UserScreen {
         interfaceScreenMap.put(nameScreenAddMemberTeam, new InterfaceScreen(pathToTheFileWithName_AddMemberTeam));
         interfaceScreenMap.put(nameScreenHomePage, new InterfaceScreen(pathToTheFileWithName_HomePage));
         interfaceScreenMap.put(nameScreenPersonnelData, new InterfaceScreen(pathToTheFileWithName_PersonnelData));
+        interfaceScreenMap.put(nameScreenAddPerson, new InterfaceScreen(pathToTheFileWithName_AddPerson));
+        interfaceScreenMap.put(nameScreenChangeSurname, new InterfaceScreen(pathToTheFileWithName_ChangeSurname));
+        interfaceScreenMap.put(nameScreenDeletePerson, new InterfaceScreen(pathToTheFileWithName_DeletePerson));
     }
 
     private void setRelations() {

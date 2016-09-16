@@ -50,7 +50,80 @@ public class InputScreen {
             case ("ADD A MEMBER OF THE TEAM"):
                 InputScreenAddMemberTeam();
                 break;
+            case ("ADD PERSON"):
+                InputScreenAddPerson();
+                break;
+            case ("CHANGE SURNAME"):
+                InputScreenChangeSurname();
+                break;
+            case ("DELETE PERSON"):
+                InputScreenDeletePerson();
+                break;
         }
+    }
+
+    private void InputScreenDeletePerson() {
+        int idStaff = idPerson();
+        workingWithMySQL.writeDeletePerson(idStaff);
+        UserScreen.setInterfaceScreen("PERSONNEL DATA");
+    }
+
+    private void InputScreenChangeSurname() {
+        int idStaff = idPerson();
+        String last_name = inputString("Input new last name");
+        workingWithMySQL.writeNewStaffLastName(idStaff,last_name);
+        UserScreen.setInterfaceScreen("PERSONNEL DATA");
+    }
+
+    private int idPerson(){
+        boolean endWork = false;
+        boolean controlId = true;
+        int idStaff = 0;
+        ArrayList<Integer> listIdStaff = workingWithMySQL.showStaff();
+        while (!endWork) {
+            idStaff = inputInt("Input Id person");
+            for (Integer id : listIdStaff) {
+                if (id == idStaff) {
+                    endWork = true;
+                    controlId = false;
+                    break;
+                }
+            }
+            if(controlId){
+                System.out.println("Incorrect input");
+            }
+        }
+        return idStaff;
+    }
+
+    private void InputScreenAddPerson() {
+        boolean endWork = false;
+        boolean controlId = true;
+        int idSpecialty = 0;
+        String last_name = inputString("Input last name");
+        String first_name = inputString("Input first name");
+        int age = 0;
+        while ((age < 18) || (age > 65)){
+            age = inputInt("Input age");
+        }
+        ArrayList<Integer> listIdSpecialty = workingWithMySQL.returnListIdSpecialty();
+        while (!endWork) {
+            idSpecialty = inputInt("Input Id specialty");
+            for (Integer id : listIdSpecialty) {
+                if (id == idSpecialty) {
+                    endWork = true;
+                    controlId = false;
+                    break;
+                }
+            }
+            if(controlId){
+                System.out.println("Incorrect input");
+            }
+        }
+        int idNewPerson = workingWithMySQL.writeNewStaff(first_name,last_name,age);
+        workingWithMySQL.writeStaffSpecialty(idNewPerson,idSpecialty);
+        workingWithMySQL.showStaff();
+        UserScreen.setInterfaceScreen("PERSONNEL DATA");
     }
 
     private void InputScreenDeleteProject() {
