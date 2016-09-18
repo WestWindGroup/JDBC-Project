@@ -28,26 +28,26 @@ public class UserScreen {
     private String nameScreenDeletePerson = "DELETE PERSON";
 
 
-    private String pathToTheFileWithName_Project = "resources\\Screen\\Project.txt";
-    private String pathToTheFileWithName_Create = "resources\\Screen\\Create.txt";
-    private String pathToTheFileWithName_Show = "resources\\Screen\\Show.txt";
-    private String pathToTheFileWithName_Change = "resources\\Screen\\Change.txt";
-    private String pathToTheFileWithName_Delete = "resources\\Screen\\Delete.txt";
-    private String pathToTheFileWithName_EditTeam = "resources\\Screen\\EditTeam.txt";
-    private String pathToTheFileWithName_AddTeam = "resources\\Screen\\AddTeam.txt";
-    private String pathToTheFileWithName_selectProject = "resources\\Screen\\selectProject.txt";
-    private String pathToTheFileWithName_ChangeName = "resources\\Screen\\ChangeName.txt";
-    private String pathToTheFileWithName_ChangeDiscr = "resources\\Screen\\ChangeDiscr.txt";
-    private String pathToTheFileWithName_ChangePM = "resources\\Screen\\ChangePM.txt";
-    private String pathToTheFileWithName_ChangeTeam = "resources\\Screen\\ChangeTeam.txt";
-    private String pathToTheFileWithName_DeleteTeam = "resources\\Screen\\DeleteTeam.txt";
-    private String pathToTheFileWithName_DeleteMemberTeam = "resources\\Screen\\DeleteMemberTeam.txt";
-    private String pathToTheFileWithName_AddMemberTeam = "resources\\Screen\\AddMemberTeam.txt";
-    private String pathToTheFileWithName_HomePage = "resources\\Screen\\HomePage.txt";
-    private String pathToTheFileWithName_PersonnelData = "resources\\Screen\\PersonnelData.txt";
-    private String pathToTheFileWithName_AddPerson = "resources\\Screen\\AddPerson.txt";
-    private String pathToTheFileWithName_ChangeSurname = "resources\\Screen\\ChangeSurname.txt";
-    private String pathToTheFileWithName_DeletePerson = "resources\\Screen\\DeletePerson.txt";
+    private String pathToTheFileWithName_Project = "resources/Screen/Project.txt";
+    private String pathToTheFileWithName_Create = "resources/Screen/Create.txt";
+    private String pathToTheFileWithName_Show = "resources/Screen/Show.txt";
+    private String pathToTheFileWithName_Change = "resources/Screen/Change.txt";
+    private String pathToTheFileWithName_Delete = "resources/Screen/Delete.txt";
+    private String pathToTheFileWithName_EditTeam = "resources/Screen/EditTeam.txt";
+    private String pathToTheFileWithName_AddTeam = "resources/Screen/AddTeam.txt";
+    private String pathToTheFileWithName_selectProject = "resources/Screen/selectProject.txt";
+    private String pathToTheFileWithName_ChangeName = "resources/Screen/ChangeName.txt";
+    private String pathToTheFileWithName_ChangeDiscr = "resources/Screen/ChangeDiscr.txt";
+    private String pathToTheFileWithName_ChangePM = "resources/Screen/ChangePM.txt";
+    private String pathToTheFileWithName_ChangeTeam = "resources/Screen/ChangeTeam.txt";
+    private String pathToTheFileWithName_DeleteTeam = "resources/Screen/DeleteTeam.txt";
+    private String pathToTheFileWithName_DeleteMemberTeam = "resources/Screen/DeleteMemberTeam.txt";
+    private String pathToTheFileWithName_AddMemberTeam = "resources/Screen/AddMemberTeam.txt";
+    private String pathToTheFileWithName_HomePage = "resources/Screen/HomePage.txt";
+    private String pathToTheFileWithName_PersonnelData = "resources/Screen/PersonnelData.txt";
+    private String pathToTheFileWithName_AddPerson = "resources/Screen/AddPerson.txt";
+    private String pathToTheFileWithName_ChangeSurname = "resources/Screen/ChangeSurname.txt";
+    private String pathToTheFileWithName_DeletePerson = "resources/Screen/DeletePerson.txt";
 
     private static Map<String, InterfaceScreen> interfaceScreenMap;
     private static InterfaceScreen activeScreen;
